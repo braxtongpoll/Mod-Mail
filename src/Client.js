@@ -2,13 +2,10 @@ if (Number(process.version.slice(1).split(".")[0] < 12)) throw new Error(`Node.j
 const { Client, Collection, MessageEmbed } = require('discord.js');
 const path = require('path');
 const { readdirSync } = require('fs');
-var num = 0;
-const symbols = require(`log-symbols`);
-const config = require(`../config/config.json`);
 class ModMail extends Client {
     constructor(options) {
         super(options);
-        this.config = config;
+        this.config = require("../config");
         this.commands = new Collection();
         this.aliases = new Collection();
         this.data = require("./schemas/datas");
@@ -19,7 +16,7 @@ class ModMail extends Client {
                         return client.data.create({
                             _id: `${guild.id}`
                         }).then(() => {
-                            return console.log(symbols.warning, `I was invited to ${guild.name} while offline. I added them to the database.`).then(a => a.delete({ timeout: 5000 }))
+                            return console.log(`I was invited to ${guild.name} while offline. I added them to the database.`).then(a => a.delete({ timeout: 5000 }))
                         }).catch(() => {})
                     }
                 });
@@ -71,10 +68,10 @@ const init = async() => {
         delete require.cache[require.resolve(`../events/${e}`)]
     })
     if (events.length === 0) console.warn(`No event files found to load.`)
-    global.cmdsLoaded = totalLoaded;
-    global.evnsLoaded = events.length;
+    global.commands = totalLoaded;
+    global.events = events.length;
 
-    client.login(config.token).catch(e => console.log(`Failed to login [${e}]`))
+    client.login(client.config.token).catch(e => console.log(`Failed to login [${e}]`))
 }
 client.on('disconnect', () => client.logger.warn(`Connection the Discord API lost, attempting to reconnect.`)).on('reconnecting', () => client.logger.log(`Attempting API reconnection.`))
 client.on(`error`, e => client.logger.log(e)).on(`warn`, w => client.logger.warn(w))

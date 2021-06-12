@@ -1,5 +1,5 @@
 if (Number(process.version.slice(1).split(".")[0] < 12)) throw new Error(`Node.js 12.0.0 is required, Discord.JS relies on this version, please update @ https://nodejs.org`);
-const { Client, Collection, MessageEmbed } = require('discord.js');
+const { Client, Collection, MessageEmbed, Intents } = require('discord.js');
 const path = require('path');
 const { readdirSync } = require('fs');
 class ModMail extends Client {
@@ -8,12 +8,12 @@ class ModMail extends Client {
         this.config = require("../config");
         this.commands = new Collection();
         this.aliases = new Collection();
-        this.data = require("./schemas/datas");
+        this.db = require("./schemas/datas");
         this.checkForDocument = async(client) => {
             client.guilds.cache.forEach(guild => {
-                client.data.findById(guild.id, async function(_err, res) {
+                client.db.findById(guild.id, async function(_err, res) {
                     if (res == null) {
-                        return client.data.create({
+                        return client.db.create({
                             _id: `${guild.id}`
                         }).then(() => {
                             return console.log(`I was invited to ${guild.name} while offline. I added them to the database.`).then(a => a.delete({ timeout: 5000 }))
@@ -23,18 +23,16 @@ class ModMail extends Client {
             });
         };
         this.docUpdate = async(message, document, newData, replyText) => {
-            this.data.findByIdAndUpdate(message.guild.id, {
+            this.db.findByIdAndUpdate(message.guild.id, {
                 [`${document}`]: newData
             }).then(() => {
-                return message.reply(replyText)
+                if (replyText) message.reply(replyText);
             }).catch(e => { return message.reply(`An error accured: ${e.stack}`) });
         };
     };
 };
 
-const client = new ModMail({
-    partials: ["MESSAGE", "CHANNEL", "REACTION"]
-});
+const client = new ModMail({ intents: ['GUILDS', 'GUILD_MESSAGES'] });
 
 const init = async() => {
     var totalLoaded = 0;
@@ -73,7 +71,7 @@ const init = async() => {
 
     client.login(client.config.token).catch(e => console.log(`Failed to login [${e}]`))
 }
-client.on('disconnect', () => client.logger.warn(`Connection the Discord API lost, attempting to reconnect.`)).on('reconnecting', () => client.logger.log(`Attempting API reconnection.`))
-client.on(`error`, e => client.logger.log(e)).on(`warn`, w => client.logger.warn(w))
+client.on('disconnect', () => console.warn(`Connection the Discord API lost, attempting to reconnect.`)).on('reconnecting', () => console.log(`Attempting API reconnection.`))
+client.on(`error`, e => console.log(e)).on(`warn`, w => console.warn(w))
 
 exports.init = init;

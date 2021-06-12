@@ -11,7 +11,7 @@ function initDB(client) {
 }
 err => {
     if (err) console.log(`Failed to init mongoDB ${err.stack}`)
-}
+};
 
 
 exports.initDB = initDB;

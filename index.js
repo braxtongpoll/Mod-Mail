@@ -1,1 +1,3 @@
-require("./src/Client").init()
+const fs = require("fs")
+    //require("./src/Client").init()
+fs

@@ -29,10 +29,15 @@ class ModMail extends Client {
                 if (replyText) message.reply(replyText);
             }).catch(e => { return message.reply(`An error accured: ${e.stack}`) });
         };
+        this.ia = async(message, argument) => {
+            return message.reply("Your arguements are missing one of the following to execute correctly. `" + argument + "`");
+        };
     };
 };
 
-const client = new ModMail({ intents: ['GUILDS', 'GUILD_MESSAGES'] });
+const client = new ModMail({
+    intents: ['GUILDS', 'GUILD_MESSAGES']
+});
 
 const init = async() => {
     var totalLoaded = 0;

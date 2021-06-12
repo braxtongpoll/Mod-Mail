@@ -1,3 +1,2 @@
 const fs = require("fs")
-    //require("./src/Client").init()
-fs
+require("./src/Client").init()

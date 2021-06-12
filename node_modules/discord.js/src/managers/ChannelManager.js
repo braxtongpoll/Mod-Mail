@@ -41,7 +41,7 @@ class ChannelManager extends BaseManager {
 
   remove(id) {
     const channel = this.cache.get(id);
-    if (channel.guild) channel.guild.channels.cache.delete(id);
+    channel?.guild?.channels.cache.delete(id);
     this.cache.delete(id);
   }
 
@@ -75,7 +75,7 @@ class ChannelManager extends BaseManager {
    * @param {Snowflake} id ID of the channel
    * @param {boolean} [cache=true] Whether to cache the new channel object if it isn't already
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
-   * @returns {Promise<Channel>}
+   * @returns {Promise<?Channel>}
    * @example
    * // Fetch a channel by its id
    * client.channels.fetch('222109930545610754')

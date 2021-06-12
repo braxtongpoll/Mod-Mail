@@ -20,7 +20,7 @@ async function callMenu(client, message, res) {
     embed.setColor(client.config.color)
     let commandData = {};
     fs.readdirSync(path.join(__dirname, `../`)).forEach(dir => {
-        if (dir == "developer" && !client.config.devs.includes(message.author.id)) return;
+        if (dir.toLowerCase() == "developer" && !client.config.devs.includes(message.author.id)) return;
         const cmds = fs.readdirSync(path.join(__dirname, `../`, `${dir}`)).filter(f => f.endsWith(".js"));
         for (let file of cmds) {
             let info = require(`../${dir}/${file}`);
@@ -52,7 +52,7 @@ async function callMenu(client, message, res) {
     });
     embed.setDescription(client.config["help embed welcome"]);
     embed.setFooter(`Viewing page ${page} of ${pages.length}`)
-    message.channel.send(embed).then(async(m) => {
+    message.reply({ embeds: [embed] }).then(async(m) => {
         m.react(`⬅️`).then(async(r) => {
             await m.react(`❌`);
             await m.react(`➡️`);
@@ -77,7 +77,7 @@ async function callMenu(client, message, res) {
                 });
                 embed.setDescription(desc)
                 embed.setFooter(`Viewing page ${page} of ${pages.length}`)
-                m.edit(embed)
+                message.channel.messages.edit(m.id, { embeds: [embed] })
             });
 
             forwards.on(`collect`, async(r) => {
@@ -91,7 +91,7 @@ async function callMenu(client, message, res) {
                 });
                 embed.setDescription(desc)
                 embed.setFooter(`Viewing page ${page} of ${pages.length}`)
-                m.edit(embed)
+                message.channel.messages.edit(m.id, { embeds: [embed] })
             });
 
             closer.on('collect', r => {
@@ -125,11 +125,11 @@ async function callCommand(client, message, command, res) {
         embed.setAuthor(`No information found for ${command}`);
         embed.setDescription(`The command by that name was not found.`);
         embed.setFooter(`Requested by ${message.author.tag}`)
-        return message.channel.send(embed)
+        return message.reply({ embeds: [embed] })
     }
     embed.setColor(client.config.color);
     embed.setAuthor(`Information for ${command}`);
     embed.setDescription(cmdData);
     embed.setFooter(`Requested by ${message.author.tag}`)
-    return message.channel.send(embed)
+    return message.reply({ embeds: [embed] })
 }

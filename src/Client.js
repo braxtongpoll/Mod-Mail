@@ -1,5 +1,5 @@
 if (Number(process.version.slice(1).split(".")[0] < 12)) throw new Error(`Node.js 12.0.0 is required, Discord.JS relies on this version, please update @ https://nodejs.org`);
-const { Client, Collection, MessageEmbed, Intents } = require('discord.js');
+const { Client, Collection } = require('discord.js');
 const path = require('path');
 const { readdirSync } = require('fs');
 class ModMail extends Client {
@@ -9,6 +9,7 @@ class ModMail extends Client {
         this.commands = new Collection();
         this.aliases = new Collection();
         this.db = require("./schemas/datas");
+        this.utils = require("./functions/utils");
         this.checkForDocument = async(client) => {
             client.guilds.cache.forEach(guild => {
                 client.db.findById(guild.id, async function(_err, res) {
@@ -32,12 +33,15 @@ class ModMail extends Client {
         this.ia = async(message, argument) => {
             return message.reply("Your arguements are missing one of the following to execute correctly. `" + argument + "`");
         };
+
     };
 };
 
 const client = new ModMail({
-    intents: ['GUILDS', 'GUILD_MESSAGES']
+    intents: ['GUILDS', 'GUILD_MESSAGES', "GUILD_MESSAGE_REACTIONS"],
+    partials: ["CHANNEL", "MESSAGE", "REACTIONS"]
 });
+
 
 const init = async() => {
     var totalLoaded = 0;

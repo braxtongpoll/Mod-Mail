@@ -1,6 +1,3 @@
-const { MessageEmbed } = require(`discord.js`);
-const fs = require(`fs`);
-const path = require("path");
 exports.run = async(client, message, args) => {
     let prefix = args.join(" ");
     if (!prefix) return client.ia(message, exports.info.arguments);
@@ -8,7 +5,7 @@ exports.run = async(client, message, args) => {
 }, exports.info = {
     name: "prefix",
     aliases: [],
-    permission: `ADMINISTRATOR`,
+    permission: `MANAGE_GUILD`,
     description: `Change the prefix of the bot.`,
     arguments: "NEW_PREFIX"
 }

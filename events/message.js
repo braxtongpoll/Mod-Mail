@@ -20,13 +20,7 @@ function commandController(client, message, prefix) {
     let command = args.shift().toLowerCase();
     const cmd = client.commands.get(command);
     try {
-        if (message.member.hasPermission(cmd.info.permission)) {
-            let embed = new MessageEmbed()
-                .setColor(client.config.color)
-                .setAuthor("Missing Permission")
-                .setDescription("You're missing the permission `" + cmd.info.permission + "` to run this command.")
-            return message.reply(`${message.member}`, { embed: embed }).then(a => a.delete({ timeout: 10000 }));
-        }
+        if (!message.member.permissions.has(cmd.info.permission)) return message.reply("You're missing the permission `" + cmd.info.permission + "` to run this command.", { reply: { messageReference: '765432109876543219' } })
     } catch {};
     if (cmd) {
         try {

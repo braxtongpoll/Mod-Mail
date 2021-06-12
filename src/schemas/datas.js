@@ -7,5 +7,6 @@ const schema = new mongoose.Schema({
     closedMailLogs: { type: String, default: "" },
     activeMail: { type: Object, default: {} },
     roles: { type: Array, default: [] },
+    ids: { type: Array, default: [] }
 });
 module.exports = mongoose.model(`datas`, schema);

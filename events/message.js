@@ -1,7 +1,9 @@
 const { MessageEmbed } = require("discord.js");
 const users = require("../src/schemas/users");
+let active = [];
 module.exports = async(client, message) => {
     if (!message.author) return;
+    if (message.author.id == client.user.id) return;
     if (!message.guild) return DMMessageEvent(client, message);
     client.db.findById(message.guild.id, async function(err, res) {
         if (message.content.startsWith(res.prefix)) return commandController(client, message, res.prefix);
@@ -10,6 +12,8 @@ module.exports = async(client, message) => {
 
 
 async function DMMessageEvent(client, message) {
+    if (active.includes(message.author.id)) return;
+    active.push(message.author.id);
     users.findById(message.author.id, async function(err, res) {
         if (err) users.create({ _id: message.author.id }).then(() => {});
         let cont = false;
@@ -17,7 +21,13 @@ async function DMMessageEvent(client, message) {
             if (res.active.length > 1) cont = true;
         }
         if (cont == true) {
-
+            let channel = await client.channels.cache.get(res.active);
+            let mail = new MessageEmbed()
+                .setColor(client.config.color)
+                .setDescription(message.content)
+                .setAuthor(`New mail from ${message.author.tag}`, message.author.displayAvatarURL())
+            try { mail.setImage(message.attachments[0].url) } catch {}
+            channel.send({ embeds: [mail] })
         } else {
             let guilds = [];
             await client.guilds.cache.forEach(async(guild) => {
@@ -42,10 +52,11 @@ async function DMMessageEvent(client, message) {
                     temp = 0;
                 };
             };
+            if (string.length) message.channel.send({ embeds: [embed.setDescription(string)] });
             message.channel.send("Please select a number from the list of guilds above.");
             const filter = response => { return response.author.id === message.author.id };
             message.channel.awaitMessages(filter, { max: 1, time: 120000, errors: [`time`] }).then(collected => {
-                if (isNan(collected.first().content) || collected.first().content > guilds.length) return message.channel.send("Invalid selection. Please try again.");
+                if (isNaN(collected.first().content) || collected.first().content > guilds.length) return message.channel.send("Invalid selection. Please try again.");
                 const guild = guilds[collected.first().content - 1];
                 client.db.findById(guild.id, async function(err, res) {
                     const category = await guild.channels.cache.get(res.category);
@@ -61,15 +72,27 @@ async function DMMessageEvent(client, message) {
                             }]
                         }).then(async function(channel) {
                             let mail = new MessageEmbed()
-                                .setFooter(guild.name, guild.iconURL())
                                 .setColor(client.config.color)
                                 .setDescription(content)
                                 .setAuthor(`New mail from ${message.author.tag}`, message.author.displayAvatarURL())
                             channel.send({ embeds: [mail] })
+                            active = active.filter(id => id !== message.author.id);
+                            message.author.send("Your mail has been delivered! Support staff will be with you shortly.")
+                            users.findById(message.author.id, async function(err, res) {
+                                if (err) {
+                                    return users.create({
+                                        _id: message.author.id,
+                                        active: `${channel.id}`
+                                    });
+                                };
+                                return users.findByIdAndUpdate(message.author.id, { active: `${channel.id}` }).then(() => {});
+                            })
                         });
                     });
                 });
             }).catch(e => {
+                active = active.filter(id => id !== message.author.id);
+                console.log(e.stack)
                 return message.channel.send("Time error.");
             })
         };

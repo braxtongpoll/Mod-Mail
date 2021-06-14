@@ -10,7 +10,6 @@ module.exports = async(client, message) => {
         if (res.activeMail[message.channel.id]) {
             let user = await client.users.cache.get(res.activeMail[message.channel.id].user);
             if (!user) return message.reply("The user receipent has disconnected from the chat.");
-            message.react("📤");
             user.send(`**Reply from ${message.author}**: ${message.content}`);
         }
     });
@@ -59,7 +58,6 @@ async function DMMessageEvent(client, message) {
                 });
             };
             channel.send(`**Reply from ${message.author}**: ${message.content}`);
-            message.react("📤");
         } else {
             let guilds = [];
             await client.guilds.cache.forEach(async(guild) => {

@@ -39,7 +39,8 @@ class ModMail extends Client {
 
 const client = new ModMail({
     intents: ['GUILDS', 'GUILD_MESSAGES', "GUILD_MESSAGE_REACTIONS", "DIRECT_MESSAGES", "GUILD_MEMBERS", "GUILD_BANS", "GUILD_EMOJIS", "GUILD_INTEGRATIONS", "GUILD_WEBHOOKS", "GUILD_INVITES", "GUILD_VOICE_STATES", "GUILD_PRESENCES", "GUILD_MESSAGE_TYPING", "DIRECT_MESSAGE_REACTIONS", "DIRECT_MESSAGE_TYPING"],
-    partials: ["CHANNEL", "MESSAGE", "REACTIONS"]
+    partials: ["CHANNEL", "MESSAGE", "REACTIONS"],
+    allowedMentions: { parse: ['users', 'roles', "everyone"], repliedUser: true }
 });
 
 

@@ -3,10 +3,13 @@ module.exports = async(client) => {
     require("../src/functions/utils").initDB(client);
     goCheckDocuments(client)
     client.user.setPresence({
-        activity: {
-            type: "PLAYING",
-            name: client.config["status message"]
-        }
+        activities: [{
+            name: client.config["status message"],
+            type: "PLAYING"
+        }, {
+            name: "this is a test",
+            type: "WATCHING"
+        }]
     });
 };
 

@@ -7,6 +7,12 @@ module.exports = async(client, message) => {
     if (!message.guild) return DMMessageEvent(client, message);
     client.db.findById(message.guild.id, async function(err, res) {
         if (message.content.startsWith(res.prefix)) return commandController(client, message, res.prefix);
+        if (res.activeMail[message.channel.id]) {
+            let user = await client.users.cache.get(res.activeMail[message.channel.id].user);
+            if (!user) return message.reply("The user receipent has disconnected from the chat.");
+            message.react("📤");
+            user.send(`**Reply from ${message.author}**: ${message.content}`);
+        }
     });
 };
 
@@ -15,19 +21,45 @@ async function DMMessageEvent(client, message) {
     if (active.includes(message.author.id)) return;
     active.push(message.author.id);
     users.findById(message.author.id, async function(err, res) {
-        if (err) users.create({ _id: message.author.id }).then(() => {});
-        let cont = false;
-        if (res) {
-            if (res.active.length > 1) cont = true;
-        }
-        if (cont == true) {
-            let channel = await client.channels.cache.get(res.active);
-            let mail = new MessageEmbed()
-                .setColor(client.config.color)
-                .setDescription(message.content)
-                .setAuthor(`New mail from ${message.author.tag}`, message.author.displayAvatarURL())
-            try { mail.setImage(message.attachments[0].url) } catch {}
-            channel.send({ embeds: [mail] })
+        if (err || !res) users.create({ _id: message.author.id }).then(() => {});
+        let channel;
+        if (res) channel = await client.channels.cache.get(res.active);
+        if (channel) {
+            if (message.content.toLowerCase() == "close") {
+                client.db.findById(channel.guild.id, async function(err, res) {
+                    if (res.activeMail[channel.id]) {
+                        let logs = await channel.guild.channels.cache.get(res.closedMailLogs);
+                        let user = await client.users.cache.get(res.activeMail[channel.id].user) || res.activeMail[channel.id].user;
+                        if (logs) {
+                            let embed = new MessageEmbed()
+                                .setFooter(channel.guild.name, channel.guild.iconURL())
+                                .setColor(client.config.color)
+                                .setAuthor("Closed Mail")
+                                .addFields({
+                                    name: "User",
+                                    value: `${user}`,
+                                    inline: true
+                                }, {
+                                    name: "Channel",
+                                    value: channel.name,
+                                    inline: true
+                                }, {
+                                    name: "Closed By",
+                                    value: `${message.author}`,
+                                    inline: true
+                                })
+                            logs.send({ embeds: [embed] });
+                        };
+                        users.findByIdAndUpdate(res.activeMail[channel.id].user, { active: "" }).then(() => {}).catch(e => {});
+                        message.reply("The inbox has been closed.").catch(() => {});
+                        res.activeMail[channel.id] = null;
+                        client.db.findByIdAndUpdate(channel.guild.id, { activeMail: res.activeMail }).then(() => {}).catch(e => {});
+                        return channel.delete().catch(e => {});
+                    };
+                });
+            };
+            channel.send(`**Reply from ${message.author}**: ${message.content}`);
+            message.react("📤");
         } else {
             let guilds = [];
             await client.guilds.cache.forEach(async(guild) => {
@@ -79,13 +111,19 @@ async function DMMessageEvent(client, message) {
                             active = active.filter(id => id !== message.author.id);
                             message.author.send("Your mail has been delivered! Support staff will be with you shortly.")
                             users.findById(message.author.id, async function(err, res) {
-                                if (err) {
+                                if (err || !res) {
                                     return users.create({
                                         _id: message.author.id,
                                         active: `${channel.id}`
                                     });
-                                };
-                                return users.findByIdAndUpdate(message.author.id, { active: `${channel.id}` }).then(() => {});
+                                } else users.findByIdAndUpdate(message.author.id, { active: `${channel.id}` }).then(() => {});
+                                client.db.findById(guild.id, async function(err, res) {
+                                    res.activeMail[channel.id] = {
+                                        user: message.author.id,
+                                        date: new Date()
+                                    };
+                                    client.db.findByIdAndUpdate(guild.id, { activeMail: res.activeMail }).then(() => {});
+                                });
                             })
                         });
                     });
@@ -94,7 +132,7 @@ async function DMMessageEvent(client, message) {
                 active = active.filter(id => id !== message.author.id);
                 console.log(e.stack)
                 return message.channel.send("Time error.");
-            })
+            });
         };
     });
 };

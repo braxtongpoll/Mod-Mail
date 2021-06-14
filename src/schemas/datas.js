@@ -6,7 +6,6 @@ const schema = new mongoose.Schema({
     category: { type: String, default: "" },
     closedMailLogs: { type: String, default: "" },
     activeMail: { type: Object, default: {} },
-    roles: { type: Array, default: [] },
-    ids: { type: Array, default: [] }
+    roles: { type: Array, default: [] }
 });
 module.exports = mongoose.model(`datas`, schema);

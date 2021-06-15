@@ -51,7 +51,7 @@ async function callMenu(client, message, res) {
         pages.push(category);
     });
     embed.setDescription(client.config["help embed welcome"]);
-    embed.setFooter(`Viewing page ${page} of ${pages.length}`)
+    embed.setFooter(`Viewing page ${page} of ${pages.length}`, client.user.displayAvatarURL())
     message.reply({ embeds: [embed] }).then(async(m) => {
         m.react(`⬅️`).then(async(r) => {
             await m.react(`❌`);
@@ -70,11 +70,18 @@ async function callMenu(client, message, res) {
                 await removeReaction(m, message, '⬅️')
                 if (page === 1) return;
                 page--;
-                embed.setAuthor(pages[page - 1])
-                let desc = "To get more info on a command run `" + res.prefix + "help <command_name>`\n\n";
-                Object.keys(commandData[pages[page - 1]]).forEach(cmd => {
-                    desc += "`" + res.prefix + cmd + "`\n" + commandData[pages[page - 1]][cmd].description + "\n";
-                });
+                let desc;
+                if (page == pages.length) {
+                    embed.setAuthor("Credit Page")
+                    let dev = await client.users.fetch("399718367335940117");
+                    desc = `**Developer**: ${dev}\n**Support**: [Go Here](https://plutothe.dev/discord)\n**Repo**: [Click Here](https://github.com/braxtongpoll/Mod-Mail)\n\nThanks for using Pluto's Mod Mail!`
+                } else {
+                    embed.setAuthor(pages[page - 1])
+                    desc = "To get more info on a command run `" + res.prefix + "help <command_name>`\n\n";
+                    await Object.keys(commandData[pages[page - 1]]).forEach(cmd => {
+                        desc += "`" + res.prefix + cmd + "`\n" + commandData[pages[page - 1]][cmd].description + "\n";
+                    });
+                };
                 embed.setDescription(desc)
                 embed.setFooter(`Viewing page ${page} of ${pages.length}`)
                 message.channel.messages.edit(m.id, { embeds: [embed] })
@@ -84,11 +91,18 @@ async function callMenu(client, message, res) {
                 await removeReaction(m, message, '➡️')
                 if (page === pages.length) return;
                 page++;
-                embed.setAuthor(pages[page - 1])
-                let desc = "To get more info on a command run `" + res.prefix + "help <command_name>`\n\n";
-                Object.keys(commandData[pages[page - 1]]).forEach(cmd => {
-                    desc += "`" + res.prefix + cmd + "`\n" + commandData[pages[page - 1]][cmd].description + "\n";
-                });
+                let desc;
+                if (page == pages.length) {
+                    embed.setAuthor("Credit Page")
+                    let dev = await client.users.fetch("399718367335940117");
+                    desc = `**Developer**: ${dev}\n**Support**: [Go Here](https://plutothe.dev/discord)\n**Repo**:[Click Here](https://github.com/braxtongpoll/Mod-Mail)\n\nThanks for using Pluto's Mod Mail!`
+                } else {
+                    embed.setAuthor(pages[page - 1])
+                    desc = "To get more info on a command run `" + res.prefix + "help <command_name>`\n\n";
+                    Object.keys(commandData[pages[page - 1]]).forEach(cmd => {
+                        desc += "`" + res.prefix + cmd + "`\n" + commandData[pages[page - 1]][cmd].description + "\n";
+                    });
+                };
                 embed.setDescription(desc)
                 embed.setFooter(`Viewing page ${page} of ${pages.length}`)
                 message.channel.messages.edit(m.id, { embeds: [embed] })

@@ -101,6 +101,11 @@ async function DMMessageEvent(client, message) {
                                 deny: [`VIEW_CHANNEL`]
                             }]
                         }).then(async function(channel) {
+                            if (res.roles.length) {
+                                for (let id of res.roles) {
+                                    channel.updateOverwrite(id, { VIEW_CHANNEL: true, SEND_MESSAGES: true, READ_MESSAGE_HISTORY: true }).catch(() => {});
+                                }
+                            }
                             let mail = new MessageEmbed()
                                 .setColor(client.config.color)
                                 .setDescription(content)

@@ -50,14 +50,14 @@ async function DMMessageEvent(client, message) {
                             logs.send({ embeds: [embed] });
                         };
                         users.findByIdAndUpdate(res.activeMail[channel.id].user, { active: "" }).then(() => {}).catch(e => {});
-                        message.reply("The inbox has been closed.").catch(() => {});
+                        message.reply("The inbox has been closed.").then((msg) => {}).catch(e => { console.log(e.stack) })
                         res.activeMail[channel.id] = null;
                         client.db.findByIdAndUpdate(channel.guild.id, { activeMail: res.activeMail }).then(() => {}).catch(e => {});
                         return channel.delete().catch(e => {});
                     };
                 });
             };
-            channel.send(`**Reply from ${message.author}**: ${message.content}`);
+            channel.send(`**Reply from ${message.author}**: ${message.content}`).then((msg) => {}).catch(e => { console.log(e.stack) })
         } else {
             let guilds = [];
             await client.guilds.cache.forEach(async(guild) => {

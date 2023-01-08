@@ -1,2 +1,1 @@
-const fs = require("fs")
-require("./src/Client").init()
+require("./src/structure/client/client").init();

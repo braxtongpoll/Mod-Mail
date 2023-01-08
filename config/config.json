@@ -1,0 +1,27 @@
+{
+    "bot_token": "",
+    "sql": {
+        "host": "localhost",
+        "user": "root",
+        "password": "PASSWORD",
+        "database": "modmail",
+        "charset": "utf8mb4"
+    },
+    "port": 3000,
+    "domain": "http://localhost:3000",
+    "bot_presence": {
+        "status": "online",
+        "activities": [
+            {
+                "type": "WATCHING",
+                "name": "my inbox"
+            }
+        ]
+    },
+    "mail category": "",
+    "mail logging": "",
+    "support roles": [""],
+    "color": 5726888,
+    "guild": "",
+    "sent emoji": "📤"
+}

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<title>Mod Mail Interface</title>
+<meta charset="utf-8">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+<meta name="description" content="An interface to interact with the Mod Mail."/>
+<meta property="og:title" content="Mod Mail Interface"/>
+<meta property="og:type" content="website" />
+<meta property="og:description" content="An interface to interact with the Mod Mail."/>
+<link href="https://fonts.googleapis.com/css?family=Arimo:700,700italic,900,900italic%7CAsap:400,400italic,700,700italic" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="<%=config.domain%>/main.css">
+</head>
+<body>
+<div id="wrapper">
+    <div id="main">
+        <div class="inner">
+        <h1 id="text01" style="font-size: 2.125em;">401</h1>
+        <p id="text03" style="font-size: 1em;">
+            <span>
+                <br><br><br><br><br><br><br><br>
+                <%= error %>
+            </span>
+        </p>
+        </div>
+    </div>
+    <footer id= "footer">
+        <%- include('_footer.ejs') %>
+    </footer>
+</div>

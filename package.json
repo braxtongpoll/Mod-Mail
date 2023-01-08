@@ -1,29 +1,39 @@
 {
     "name": "mod-mail",
     "version": "1.0.0",
-    "description": "A simple to use mod mail bot for your discord server.",
+    "description": "Mod Mail, a product made by PlutoTheDev#1000",
     "main": "index.js",
-    "dependencies": {
-        "carden": "^4.0.0",
-        "discord.js": "13.1.0",
-        "figlet": "^1.5.0",
-        "fs": "^0.0.1-security",
-        "mongoose": "^5.12.13",
-        "path": "^0.12.7"
-    },
-    "devDependencies": {},
+    "private": true,
     "scripts": {
-        "start": "node index.js",
-        "fix": "npm i"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/braxtongpoll/Mod-Mail.git"
+        "start": "node --max-http-header-size 25000 index.js"
     },
     "author": "PlutoTheDev",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/braxtongpoll/Mod-Mail/issues"
-    },
-    "homepage": "https://github.com/braxtongpoll/Mod-Mail#readme"
+    "license": "MIT",
+    "dependencies": {
+        "@discordjs/opus": "^0.8.0",
+        "@discordjs/voice": "^0.7.5",
+        "axios": "^0.27.2",
+        "body-parser": "^1.20.0",
+        "canvas": "^2.9.3",
+        "chalk": "^4.1.2",
+        "discord-music-player": "^7.2.0",
+        "discord-player": "^5.3.1",
+        "discord.js": "^14.7.1",
+        "ejs": "^3.1.8",
+        "express": "^4.18.1",
+        "express-session": "^1.17.3",
+        "ffmpeg-static": "^4.4.0",
+        "figlet": "^1.5.2",
+        "form-data": "^4.0.0",
+        "fs": "^0.0.1-security",
+        "multer": "^1.4.5-lts.1",
+        "mysql": "^2.18.1",
+        "mysqldump": "^3.2.0",
+        "passport": "^0.6.0",
+        "passport-discord-faxes": "^0.1.4",
+        "path": "^0.12.7",
+        "request": "^2.65.0",
+        "string-table": "^0.1.5",
+        "ytdl-core": "^4.11.0"
+    }
 }

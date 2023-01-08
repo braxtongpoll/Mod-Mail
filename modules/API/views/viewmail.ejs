@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<title>Mail Log</title>
+<meta charset="utf-8">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+<meta name="description" content=<%= "Mail from " + data.openedBy  %>/>
+<meta property="og:title" content=<%= "Mail - " + data.openedBy %> />
+<meta property="og:type" content="website" />
+<meta property="og:description" content=<%= "Mail from " + data.openedBy %> />
+<link href="https://fonts.googleapis.com/css?family=Arimo:700,700italic,900,900italic%7CAsap:400,400italic,700,700italic" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="<%=config.domain%>/main.css">
+</head>
+<body>
+<div id="wrapper">
+<div id="main">
+<div class="inner">
+<h1 id="text01">Mail - <%= data.id %></h1>
+<p id="text03"><span><strong>Mail ID:</strong> <code><%= data.id %></code></span><br /><br /><span><strong><span style="color: #f1c40d">Mail Details:</span></strong>
+</span><br /><span>
+    <span><span style="color: #3398DB">Opened By</span>: <code><%= user.username %></code></span><br />
+</p><hr id="divider02">
+<% messages.forEach(msg => { %>
+    <h2 id="text04">
+        <img style="width: 2.8em; height: 2.8em; display: inline-block; margin-right: 1em; border-radius: 50%; vertical-align: middle;" src=<%= users[msg.user].iconURL %>><span style="font-size: .9em;"><%= users[msg.user].username %> (<code style="font-size: .65em; vertical-align: middle;"><%= msg.user %></code>)</span>
+    </h2>
+    <%- msg.text %>
+    <% if (msg.text.includes("!?!") || msg.text.includes("!??!") || msg.text.includes("!???!")) { %>
+    <% } else if (!config) { %>
+
+    <% } else { %>
+
+    <% } %>
+<% }) %>
+
+
+<footer id= "footer">
+    <%- include('_footer.ejs') %>
+</footer>

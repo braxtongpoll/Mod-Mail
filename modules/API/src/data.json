@@ -1,0 +1,8 @@
+{
+    "name": "api",
+    "version": "1.0.0",
+    "description": "API, a product made by PlutoTheDev#1000",
+    "private": true,
+    "author": "PlutoTheDev",
+    "license": "MIT"
+}

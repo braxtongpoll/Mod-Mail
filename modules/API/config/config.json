@@ -1,0 +1,11 @@
+{
+    "domain": "http://localhost:3000",
+    "module_active": true,
+    "discord": {
+        "oauthId": "",
+        "oauthToken": ""
+    },
+    "site_settings": {
+        "title": "Mod Mail Interface"
+    }
+}
